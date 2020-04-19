@@ -607,7 +607,7 @@ while True:
                         else:
                             random.shuffle(game.players)
                             
-                    if symbol+'join'==q or symbol+'j'==q:
+                    if symbol+'join'==q or symbol+'j'==q or symbol+'jonge'==q:
                         if author in ['swagiloo','Iciloo']:
                             PRIVMSG(gamechannel, 'parachute')
                         if author in game.players:
