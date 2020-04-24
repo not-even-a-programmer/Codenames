@@ -347,7 +347,7 @@ class Game:
             self.cluegiven = True
 
         def guessword(self, nick, word):
-            print word + ' yes'
+            #print word + ' yes'
             self.counter -= 1
             word = word.capitalize()
             self.wordlist.remove(word)
@@ -406,6 +406,7 @@ class Game:
                     PRIVMSG(self.pinkmaster, self.genlist())
                 else:
                     PRIVMSG(gamechannel, self.greenmaster+': You\'re up again! Give a clue.')
+                    PRIVMSG(self.greenmaster, self.genlist())
                 return
             
             if self.turn == 'pink':
@@ -420,12 +421,12 @@ class Game:
             if arg == 'pink':
                 PRIVMSG(gamechannel, 'All Pink agents have been revealed. Pink wins!')
             if arg == 'assassin':
-                if nick in self.greenteam and len(self.players)>2:
-                    PRIVMSG(gamechannel, 'The assassin has been revealed, causing the Pink team to win!')
-                elif nick in self.pinkteam:
-                    PRIVMSG(gamechannel, 'The assassin has been revealed, causing the Green team to win!')
-                elif nick in self.grayteam or len(self.players) == 2:
-                    PRIVMSG(gamechannel, 'The assassin has been revealed, causing everybody to lose!')
+                #if nick in self.greenteam and len(self.players)>2:
+                    #PRIVMSG(gamechannel, 'The assassin has been revealed, causing the Pink team to win!')
+                #elif nick in self.pinkteam:
+                    #PRIVMSG(gamechannel, 'The assassin has been revealed, causing the Green team to win!')
+                #elif nick in self.grayteam or len(self.players) == 2:
+                PRIVMSG(gamechannel, 'The assassin has been revealed, causing everybody to lose!')
                 
             PRIVMSG(gamechannel, self.genall())
             reset()
@@ -482,7 +483,8 @@ while True:
         print timestamp+chan+' -'+author+'- '+''.join([x+' ' for x in data.split(' ')[3:]])[1:].split('\r')[0]
         
     else:
-        print data
+    	pass
+        #print data
 
 
     try:
@@ -547,7 +549,7 @@ while True:
 
                 if symbol+'savegame'==q:
                     k = ''
-                    if len(args) > 0:
+                    if len(args) > 1:
                         k = parse(args[1])
                     f = open('savedCNgame.txt', 'w')
                     pickle.dump(game, f)
@@ -557,7 +559,7 @@ while True:
 
                 if symbol+'loadgame'==q:
                     k = ''
-                    if len(args) > 0:
+                    if len(args) > 1:
                         k = parse(args[1])
                     f = open('savedCNgame.txt', 'r')
                     game = pickle.load(f)
@@ -565,6 +567,11 @@ while True:
                     if k != 'silent': 
                         PRIVMSG(gamechannel, 'Game loaded!')
                         PRIVMSG(gamechannel, 'If necessary, use !words to see remaining and known words, !players to see team affiliations, and !c to see the current clue.')
+                if symbol + 'words' == q and chan != gamechannel: 
+					if author in [game.greenmaster, game.pinkmaster]: 
+						PRIVMSG(author, game.genlist())
+					else: 
+						PRIVMSG(author, collate(game.wordlist))
 
 
                 ##GAME COMMANDS
@@ -607,7 +614,7 @@ while True:
                         else:
                             random.shuffle(game.players)
                             
-                    if symbol+'join'==q or symbol+'j'==q:
+                    if symbol+'join'==q or symbol+'j'==q or symbol+'jonge'==q:
                         if author in ['swagiloo','Iciloo']:
                             PRIVMSG(gamechannel, 'parachute')
                         if author in game.players:
@@ -667,7 +674,7 @@ while True:
                         elif args[1][::-1][2:][::-1].capitalize() not in game.wordlist:
                             PRIVMSG(gamechannel, author+': That\'s not a word.')
                         else:
-                            print args
+                            #print args
                             game.guessword(author, args[1][::-1][2:][::-1])
                         
                     if symbol+'s'==q or symbol+'stop'==q or symbol+'done'==q:
