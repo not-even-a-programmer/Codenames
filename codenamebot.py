@@ -353,7 +353,7 @@ class Game:
             self.wordlist.remove(word)
             
             if word == self.assassin:
-                self.endgame('assassin')
+                self.endgame('assassin', nick=nick)
                 return
 
             if word in self.civilians:
@@ -415,18 +415,18 @@ class Game:
                 PRIVMSG(self.greenmaster, self.genlist())
                     
 
-        def endgame(self, arg = 'green'):
+        def endgame(self, arg = 'green', nick = None):
             if arg == 'green':
                 PRIVMSG(gamechannel, 'All Green agents have been revealed. Green wins!')
-            if arg == 'pink':
+            elif arg == 'pink':
                 PRIVMSG(gamechannel, 'All Pink agents have been revealed. Pink wins!')
-            if arg == 'assassin':
-                #if nick in self.greenteam and len(self.players)>2:
-                    #PRIVMSG(gamechannel, 'The assassin has been revealed, causing the Pink team to win!')
-                #elif nick in self.pinkteam:
-                    #PRIVMSG(gamechannel, 'The assassin has been revealed, causing the Green team to win!')
-                #elif nick in self.grayteam or len(self.players) == 2:
-                PRIVMSG(gamechannel, 'The assassin has been revealed, causing everybody to lose!')
+            elif arg == 'assassin':
+                if nick in self.greenteam:
+                    PRIVMSG(gamechannel, 'The assassin has been revealed, causing the Pink team to win!')
+                elif nick in self.pinkteam:
+                    PRIVMSG(gamechannel, 'The assassin has been revealed, causing the Green team to win!')
+                else:
+                    PRIVMSG(gamechannel, 'The assassin has been revealed, causing everybody to lose!')
                 
             PRIVMSG(gamechannel, self.genall())
             reset()
